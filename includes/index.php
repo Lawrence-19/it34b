@@ -25,6 +25,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     typr="submit"
     name="action"
     >Sample</button>
-    
+</form>
+
 </body>
 </html>
