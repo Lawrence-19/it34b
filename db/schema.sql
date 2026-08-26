@@ -10,5 +10,5 @@ CREATE TABLE if NOT EXISTS activity_logs(
     activity_log_user_agent VARCHAR(255),
 
     -- timestamp
-    activity_log_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activity_log_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

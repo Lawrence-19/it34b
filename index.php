@@ -1,31 +1,73 @@
 <?php
-require_once 'config/config.php';
-require_once 'includes/activity-logger.php';
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $action = trim($_POST['action'] ?? '');
+require_once ('config/config.php');
 
-    $user_id = $_SESSION['user_id'] ?? null;
-    $user_email = $_SESSION['user_email'] ?? null;
+$user_id = "root" ?? "null";
+$user_email = "root" ?? null;
 
-    }
+$buttons = [
+    'Login',
+    'Logout',
+    'Create Record',
+    'Update Record',
+    'Delete Record',
+    'View Record',
+    'Upload File',
+    'Download ',
+    'Search',
+    'Generate Report',
+];
+
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form method ="POST">
-    <button
-    type="submit"
-    name="action"
-    >Sample</button>
-</form>
+<table border = "1" cellpadding = "10" >
+    <tr>
+        <th>Action</th>
+        <th>Test</th>
+    </tr>
 
-</body>
-</html>
+    <?php foreach ($buttons as $button): ?>
+    <tr>
+
+        <td><?= htmlspecialchars($button); ?></td>
+        <td>
+
+        <form method = "post" >
+            <input type = "hidden" name = "action" 
+                value = "<?= htmlspecialchars($button) ?>" 
+            >
+            <button type = "submit" >TEST</button>
+        </form>
+
+    </td>
+</tr>
+
+<?php endforeach; ?>
+
+</table>
+
+<?php
+ if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    
+    $action = $_POST['action'] ?? "Test_Activity";
+    
+    $status = random_int(0, 1) === 1? 'success' : 'failed';
+
+    $success = logActivity(
+        $pdo, 
+        $user_id, 
+        $user_email, 
+        $action, 
+        $status
+        
+    );
+
+    if($success) {
+        echo "<p>Activity: " . htmlspecialchars($action) . 
+             " Status: " . htmlspecialchars($status) .
+             " Log inserted successfully </p>";
+    } else {
+        echo "<p>Failed to insert activity log</p>";
+    }
+ }
