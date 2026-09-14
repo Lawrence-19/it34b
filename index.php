@@ -17,13 +17,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $error = 'Invalid login credentials.';
     
 
-    if ($login == || $password == '') {
+    if ($login == '' || $password == '') {
 
         //Log incomplete login attemp
         logActivity($pdo, null, $login, 'login','failed');
 
     }else {
         if(loginUser($pdo, $login, $password)){
+            
         //log incomplete login attemp
         logActivity($pdo,$_SESSION['user_id'], $_SESSION['user_email'], 'login','success');
 
