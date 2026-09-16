@@ -46,23 +46,43 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-</head>
-<body>
-    
-<form method="POST">
-    <label>Username or Email</label>
-    <input type="text"
-        name="login"
-        required>
-    <br>
-    <br>
-    <label>Password</label>
-    <input type="password"
-        name="password"
-        required>
-    <br>
-    <button type="submit">Sign In</button>
-</form>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100">
+    
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+        <h2 class="card-body">Login</h2>
+        <?php if($error): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        
+        
+        <form method="POST">
+
+            <!-- Username nga Input -->
+            <div class="mb-3">
+                <label for="login" class="form-label">Username</label>
+                <input type="text"
+                    class="form-control"
+                    id="login"
+                    name="login"
+                    required>
+            </div>
+
+            <!-- Password nga Input -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required>
+            </div>
+
+            <!-- Submit nga Button -->
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
 </body>
 </html>
