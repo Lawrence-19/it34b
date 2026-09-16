@@ -12,7 +12,7 @@ function loginUser($pdo, $login, $password){
             user_id,
             user_email,
             user_username,
-            user_password
+            user_password,
             user_role
         FROM users
         WHERE user_email = :login 
@@ -25,15 +25,16 @@ function loginUser($pdo, $login, $password){
 
    $user = $stmt->fetch();
 
-   if(!user){
+   if(!$user){
         return false;
    }
 
-   if (!password_verify($password, $user['user_password'])){
-        return false;
-   }
+    if(!password_verify($password, $user['user_password'])){
+          return false;
+    }
 
-   $_SESSION['user_id'] = $user['user_id'];
+
+   $_SESSION['user_id'] = $user['user_id'];    
    $_SESSION['user_email'] = $user['user_email'];
    $_SESSION['user_username'] = $user['user_username'];
    $_SESSION['user_role'] = $user['user_role'];

@@ -1,73 +1,88 @@
 <?php
+require_once 'config/config.php';
+require_once 'config/functions.php';
 
-require_once ('config/config.php');
+if(isset($_SESSION['user_id'])){
+    header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');   
+    exit; 
+}
 
-$user_id = "root" ?? "null";
-$user_email = "root" ?? null;
+$error = '';
 
-$buttons = [
-    'Login',
-    'Logout',
-    'Create Record',
-    'Update Record',
-    'Delete Record',
-    'View Record',
-    'Upload File',
-    'Download ',
-    'Search',
-    'Generate Report',
-];
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $login = $_POST['login'] ?? '';
+    $password = $_POST['password'] ?? '';
 
+    
+    $error = 'Invalid login credentials.';
+    
+
+    if ($login == '' || $password == '') {
+
+        //Log incomplete login attemp
+        logActivity($pdo, null, $login, 'login','failed');
+
+    }else {
+        if(loginUser($pdo, $login, $password)){
+            
+        //log incomplete login attemp
+        logActivity($pdo,$_SESSION['user_id'], $_SESSION['user_email'], 'login','success');
+
+        echo 'Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php';
+        header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
+        exit;
+        
+    }
+    
+    }
+       
+}
 
 ?>
 
-<table border = "1" cellpadding = "10" >
-    <tr>
-        <th>Action</th>
-        <th>Test</th>
-    </tr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
 
-    <?php foreach ($buttons as $button): ?>
-    <tr>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
 
-        <td><?= htmlspecialchars($button); ?></td>
-        <td>
-
-        <form method = "post" >
-            <input type = "hidden" name = "action" 
-                value = "<?= htmlspecialchars($button) ?>" 
-            >
-            <button type = "submit" >TEST</button>
-        </form>
-
-    </td>
-</tr>
-
-<?php endforeach; ?>
-
-</table>
-
-<?php
- if($_SERVER['REQUEST_METHOD'] === 'POST'){
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100">
     
-    $action = $_POST['action'] ?? "Test_Activity";
-    
-    $status = random_int(0, 1) === 1? 'success' : 'failed';
-
-    $success = logActivity(
-        $pdo, 
-        $user_id, 
-        $user_email, 
-        $action, 
-        $status
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+        <h2 class="card-body">Login</h2>
+        <?php if($error): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         
-    );
+        
+        <form method="POST">
 
-    if($success) {
-        echo "<p>Activity: " . htmlspecialchars($action) . 
-             " Status: " . htmlspecialchars($status) .
-             " Log inserted successfully </p>";
-    } else {
-        echo "<p>Failed to insert activity log</p>";
-    }
- }
+            <!-- Username nga Input -->
+            <div class="mb-3">
+                <label for="login" class="form-label">Username</label>
+                <input type="text"
+                    class="form-control"
+                    id="login"
+                    name="login"
+                    required>
+            </div>
+
+            <!-- Password nga Input -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required>
+            </div>
+
+            <!-- Submit nga Button -->
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+</body>
+</html>
