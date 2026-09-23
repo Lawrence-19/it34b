@@ -16,7 +16,7 @@ function loginUser($pdo, $login, $password){
             user_role
         FROM users
         WHERE user_email = :login 
-            OR user_username = :login
+        OR user_username = :login
         LIMIT 1
    ";
 
@@ -38,6 +38,8 @@ function loginUser($pdo, $login, $password){
    $_SESSION['user_email'] = $user['user_email'];
    $_SESSION['user_username'] = $user['user_username'];
    $_SESSION['user_role'] = $user['user_role'];
+
+   $_SESSION['session_id'] = startUserSession($pdo);
 
    return true;
 }   
