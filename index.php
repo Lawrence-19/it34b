@@ -96,5 +96,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             <!-- Submit nga Button -->
             <button type="submit" class="btn btn-primary">Sign In</button>
         </form>
+
+<?php if (!isset($_GET['timeout'])): ?>
+        <p>Your session has expired due to inactivity. Please log in again</p>
+<?php endif; ?>
+
 </body>
 </html>

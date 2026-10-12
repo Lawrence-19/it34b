@@ -43,6 +43,8 @@ function loginUser($pdo, $login, $password){
    $_SESSION['user_username'] = $user['user_username'];
    $_SESSION['user_role'] = $user['user_role'];
 
+   $_SESSION['last_activity'] = time();
+   
    $_SESSION['session_id'] = startUserSession($pdo);
 
    return true;
@@ -53,14 +55,18 @@ function requireLogin(){
         header("Location: " . BASE_URL . '/index.php');
         exit;
     }
+
+    checkSessionTimeout();
 }
 
 function requireRole($role){
+
    requireLogin();
 
-   if ($_SESSION['user_role'] !== $role){
-        http_response_code(403);
-        die('Access Denied.');
-   }
+//    if ($_SESSION['user_role'] !== $role){
+//         http_response_code(403);
+//         die('Access Denied.');
+//    }
+
 }
 ?>
