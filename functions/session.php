@@ -82,7 +82,7 @@ function checkSessionTimeout(){
     // 1800 seconds = 30 minutes
     $timeout = 1800;
 
-    if(!isset($_SESSION['last_activity'])){
+    if(isset($_SESSION['last_activity'])){
 
         $inactive = time() - $_SESSION['last_activity'];
 
