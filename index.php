@@ -9,6 +9,8 @@ if(isset($_SESSION['user_id'])){
 $error = '';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    requireCsrfToken();
     $login = $_POST['login'] ?? '';
     $password = $_POST['password'] ?? '';
 
@@ -66,7 +68,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     
     <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
         <h2 class="card-body">Login</h2>
-        <?php if($error): ?>
+
+        <?php if(!empty($error)): ?>
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
@@ -75,12 +78,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
             <!-- Username nga Input -->
             <div class="mb-3">
-                <label for="login" class="form-label">Username</label>
+                <label for="login" class="form-label">Username or Email</label>
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCSRFToken()) ?>">
                 <input type="text"
                     class="form-control"
                     id="login"
                     name="login"
+                    value="<?= htmlspecialchars($login ?? '') ?>"
                     required>
+                    
             </div>
 
             <!-- Password nga Input -->
@@ -96,6 +102,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             <!-- Submit nga Button -->
             <button type="submit" class="btn btn-primary">Sign In</button>
         </form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
+
 
 <?php if (!isset($_GET['timeout'])): ?>
         <p>Your session has expired due to inactivity. Please log in again</p>
