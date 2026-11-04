@@ -38,7 +38,28 @@ if ($section === 'activity-logs'){
 
     $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+if($action === 'export'){
+    if($section === 'activity-logs'){
 
+        $stmt = $pdo->query("
+        SELECT *
+        FROM activity_logs
+        ORDER BY activity_log_created_at DESC
+        ");
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        logActivity(
+            $pdo,
+            $session['user_id'],
+            $session['user_email'],
+            'export_activity_logs',
+            'success'
+        );
+
+    }
+
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +87,9 @@ if ($section === 'activity-logs'){
 
     <?php if ($section === 'activity-logs'): ?>
 
-        <h4>Activity Logs</h4>  
+        <h4>Activity Logs
+            <a href="index.php?section=activity-logs&amp;action=export">Export CSV</a>
+        </h4>  
 
         <table class="table table-bordered table-striped">
 
