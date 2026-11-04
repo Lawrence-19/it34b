@@ -57,9 +57,23 @@ if($action === 'export'){
             'success'
         );
 
+        exportCsv(
+            'activity_logs',
+            [
+                'Record ID',
+                'User ID',
+                'User Email',
+                'Action',
+                'Status',
+                'IP Address',
+                'User Agent',
+                'Date & Time'
+            ],
+            $rows
+        );
     }
-
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
