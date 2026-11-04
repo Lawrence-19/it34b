@@ -7,9 +7,9 @@ $section = $_GET['section'] ?? '';
 
 $action = $_GET['action'] ?? '';
 
-if ($section === 'activity-logs'){
-        // Activity Logs Query
-        $stmt = $pdo->query("
+if ($section === 'activity-logs') {
+    // Activity Logs Query
+    $stmt = $pdo->query("
         SELECT * 
         FROM activity_logs
         ORDER BY activity_log_created_at DESC
@@ -39,25 +39,130 @@ if ($section === 'activity-logs'){
     $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+if ($action === 'export') {
+    if ($section === 'activity-logs') {
+
+        $stmt = $pdo->query("
+        SELECT *
+        FROM activity_logs
+        ORDER BY activity_log_created_at DESC
+        ");
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        logActivity(
+            $pdo,
+            $session['user_id'],
+            $session['user_email'],
+            'export_activity_logs',
+            'success'
+        );
+
+        exportCsv(
+            'activity_logs',
+            [
+                'Record ID',
+                'User ID',
+                'User Email',
+                'Action',
+                'Status',
+                'IP Address',
+                'User Agent',
+                'Date & Time'
+            ],
+            $rows
+        );
+    }
+
+    if ($section === 'user-sessions') {
+
+        $stmt = $pdo->query("
+        SELECT
+            us.session_id,
+            us.user_id,
+            u.user_username,
+            u.user_email,
+            u.user_role,
+            us.session_start,
+            us.session_end,
+            us.session_duration
+        FROM user_sessions us
+        INNER JOIN users u
+            ON us.user_id = u.user_id
+        ORDER BY us.session_start DESC
+        ");
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        logActivity(
+            $pdo,
+            $session['user_id'],
+            $session['user_email'],
+            'export_user_sessions',
+            'success'
+        );
+
+        foreach ($rows as &$r) {
+
+            $r['session_end'] = $r['session_end'] ?: 'Active';
+
+            if ($r['session_duration'] !== null) {
+                $s = (int) $r['session_duration'];
+                $hours = floor($s / 3600);
+                $minutes = floor(($s % 3600) / 60);
+                $seconds = $s % 60;
+                $r['session_duration'] = sprintf(
+                    '%02d hr %02d min %02d sec',
+                    $hours,
+                    $minutes,
+                    $seconds
+                );
+            } else {
+                $r['session_duration'] = 'Active';
+            }
+        }
+        unset($r);
+
+
+        exportCsv(
+            'user_sessions',
+            [
+                'Session ID',
+                'User ID',
+                'Username',
+                'Email',
+                'Role',
+                'Session Start',
+                'Session End',
+                'Duration'
+            ],
+            $rows
+        );
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-       
-   
-</head>
-<body>
-    
-        <h1>Welcome, Admin!</h1>
 
-        <a href="../../auth/signout.php" class="">
-            Sign Out
-        </a>
-        <hr>
+
+</head>
+
+<body>
+
+    <h1>Welcome, Admin!</h1>
+
+    <a href="../../auth/signout.php" class="">
+        Sign Out
+    </a>
+    <hr>
 
     <nav>
         <a href="index.php?section=activity-logs" class="">Activity Logs </a>
@@ -66,7 +171,9 @@ if ($section === 'activity-logs'){
 
     <?php if ($section === 'activity-logs'): ?>
 
-        <h4>Activity Logs</h4>  
+        <h4>Activity Logs
+            <a href="index.php?section=activity-logs&amp;action=export">Export CSV</a>
+        </h4>
 
         <table class="table table-bordered table-striped">
 
@@ -131,7 +238,9 @@ if ($section === 'activity-logs'){
 
     <?php if ($section === 'user-sessions'): ?>
 
-        <h4>User Sessions</h4>
+        <h4>User Sessions
+            <a href="index.php?section=user-sessions&amp;action=export">Export CSV</a>
+        </h4>
 
         <table class="table table-bordered table-striped">
 
@@ -182,7 +291,7 @@ if ($section === 'activity-logs'){
                             <?= $session['session_end']
                                 ? htmlspecialchars($session['session_end'])
                                 : 'Active'
-                            ?>
+                                ?>
                         </td>
 
                         <td>
@@ -224,4 +333,5 @@ if ($section === 'activity-logs'){
 
     <?php endif; ?>
 </body>
+
 </html>

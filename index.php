@@ -73,6 +73,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
+        <?php if (isset($_GET['timeout'])): ?>
+        <div class="alert alert-warning">
+            Your session has expired due to inactivity. Please log in again
+        </div>
+        <?php endif; ?>
         
         <form method="POST">
 
@@ -104,10 +109,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         </form>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
 
-
-<?php if (!isset($_GET['timeout'])): ?>
-        <p>Your session has expired due to inactivity. Please log in again</p>
-<?php endif; ?>
 
 </body>
 </html>
