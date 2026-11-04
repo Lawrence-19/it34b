@@ -46,7 +46,7 @@ if ($section === 'activity-logs'){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
        
    
 </head>
@@ -68,7 +68,7 @@ if ($section === 'activity-logs'){
 
         <h4>Activity Logs</h4>  
 
-        <table>
+        <table class="table table-bordered table-striped">
 
             <thead>
                 <tr>
@@ -133,7 +133,7 @@ if ($section === 'activity-logs'){
 
         <h4>User Sessions</h4>
 
-        <table>
+        <table class="table table-bordered table-striped">
 
             <thead>
                 <tr>
